@@ -16,6 +16,7 @@ $(function () {
   });
 
   $("#search-form select[name=patient]").on("change", function(){
+    $("table#results tbody").empty();
     fetchDiagnosisCodes(this.value);
   });
 });
@@ -31,9 +32,11 @@ function search() {
       if (records) {
         let erVists = Math.floor(Math.random()*5);
         records.forEach(record => {
-          $("<tr><td>" + record.practitioner_name + "</td><td>" + record.practitioner_add + "</td><td>"  + record.email + "</td><td>"+ record.claimAmount + "</td><td>" + erVists + "</td></tr>").appendTo(t);
+          $("<tr><td>" + record.practitioner_name + "</td><td>" + record.practitioner_add + "</td><td>"  + record.Email + "</td><td>"+ record.claimAmount + "</td><td>" + erVists + "</td></tr>").appendTo(t);
           erVists = erVists + (Math.floor(Math.random()*50));
         });
+      } else {
+        $("<tr><td colspan='5'>No recommendations available.</td></tr>").appendTo(t);
       }
     });
 }
