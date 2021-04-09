@@ -1,6 +1,6 @@
 require('file-loader?name=[name].[ext]!../node_modules/neo4j-driver/lib/browser/neo4j-web.min.js');
-const Movie = require('./models/Movie');
-const MovieCast = require('./models/MovieCast');
+const Patient = require('./models/Patient');
+const DiagnosisCode = require('./models/DiagnosisCode');
 const _ = require('lodash');
 
 const neo4j = window.neo4j;
@@ -17,7 +17,12 @@ const driver = neo4j.driver(
 
 console.log(`Database running at ${neo4jUri}`)
 
-function searchMovies(queryString) {
+function searchRecommendations(queryString) {
+  console.log("Laxmoji");
+  console.log("==========");
+  console.log(queryString);
+  console.log("==========");
+  queryString = "Matrix";
   const session = driver.session({database: database});
   return session.readTransaction((tx) =>
       tx.run('MATCH (movie:Movie) \
@@ -27,7 +32,7 @@ function searchMovies(queryString) {
     )
     .then(result => {
       return result.records.map(record => {
-        return new Movie(record.get('movie'));
+        return new Patient(record.get('movie'));
       });
     })
     .catch(error => {
@@ -38,21 +43,18 @@ function searchMovies(queryString) {
     });
 }
 
-function getMovie(title) {
+function getPatients(queryString) {
   const session = driver.session({database: database});
   return session.readTransaction((tx) =>
-      tx.run("MATCH (movie:Movie {title:$title}) \
-      OPTIONAL MATCH (movie)<-[r]-(person:Person) \
-      RETURN movie.title AS title, \
-      collect([person.name, \
-           head(split(toLower(type(r)), '_')), r.roles]) AS cast \
-      LIMIT 1", {title}))
+      tx.run('MATCH (person:Person) \
+      WHERE person.name =~ $name \
+      RETURN person LIMIT 25',
+      {name: '(?i).*' + queryString + '.*'})
+    )
     .then(result => {
-      if (_.isEmpty(result.records))
-        return null;
-
-      const record = result.records[0];
-      return new MovieCast(record.get('title'), record.get('cast'));
+      return result.records.map(record => {
+        return new Patient(record.get('person'));
+      });
     })
     .catch(error => {
       throw error;
@@ -62,33 +64,19 @@ function getMovie(title) {
     });
 }
 
-function getGraph() {
+function getDiagnosisCodes(queryString) {
+  console.log(queryString);
   const session = driver.session({database: database});
   return session.readTransaction((tx) =>
-    tx.run('MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) \
-    RETURN m.title AS movie, collect(a.name) AS cast \
-    LIMIT $limit', {limit: neo4j.int(100)}))
-    .then(results => {
-      const nodes = [], rels = [];
-      let i = 0;
-      results.records.forEach(res => {
-        nodes.push({title: res.get('movie'), label: 'movie'});
-        const target = i;
-        i++;
-
-        res.get('cast').forEach(name => {
-          const actor = {title: name, label: 'actor'};
-          let source = _.findIndex(nodes, actor);
-          if (source === -1) {
-            nodes.push(actor);
-            source = i;
-            i++;
-          }
-          rels.push({source, target})
-        })
+      tx.run('MATCH (p:Person)-[r:ACTED_IN]->(m:Movie) \
+      where p.name= $name \
+      RETURN m LIMIT 25',
+      {name: '(?i).*' + queryString + '.*'})
+    )
+    .then(result => {
+      return result.records.map(record => {
+        return new Patient(record.get('movie'));
       });
-
-      return {nodes, links: rels};
     })
     .catch(error => {
       throw error;
@@ -98,7 +86,7 @@ function getGraph() {
     });
 }
 
-exports.searchMovies = searchMovies;
-exports.getMovie = getMovie;
-exports.getGraph = getGraph;
+exports.searchRecommendations = searchRecommendations;
+exports.getPatients = getPatients;
+exports.getDiagnosisCodes = getDiagnosisCodes;
 

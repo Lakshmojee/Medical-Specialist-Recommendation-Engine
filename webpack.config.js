@@ -29,12 +29,12 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({template: 'src/assets/index.html'}),
     new Webpack.EnvironmentPlugin({
-      'NEO4J_URI': 'neo4j+s://demo.neo4jlabs.com',
+      'NEO4J_URI': 'bolt://3.236.163.27:7687',
       'NEO4J_DATABASE': 'movies',
-      'NEO4J_USER': 'movies',
-      'NEO4J_PASSWORD': 'movies',
+      'NEO4J_USER': 'neo4j',
+      'NEO4J_PASSWORD': 'place-container-designators',
       'NEO4J_VERSION': ''
-    })
+    }),
   ],
 
   resolve: {
@@ -48,12 +48,22 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|svg|ico|jpe?g|gif)$/i,
+        /*test: /\.(png|svg|ico|jpe?g|gif)$/i,
         use: [
           {
-            loader: 'file-loader',
+            loader: 'url-loader',
           },
-        ],
+        ],*/
+        test: /\.(png|jpg|gif|svg|ico|eot|ttf|woff|woff2)$/i,
+        loader: "url-loader",
+        options: {
+          limit: 8192,
+          fallback: "file-loader",
+          mimetype: 'image/png',
+          // fallback options
+          name: '[name].[ext]',
+          outputPath: 'images/'
+        },
       },
     ]
   },
