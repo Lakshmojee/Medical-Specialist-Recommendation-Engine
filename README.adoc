@@ -1,12 +1,6 @@
-== Neo4j Movies Application: Quick Start
+== Foclóir Medical Specialist Recommendation Engine
 
-image::https://github.com/neo4j-examples/movies-javascript-bolt/workflows/Node.js%20CI/badge.svg[CI]
-
-image::./img/demo.png[image of application]
-
-This example application demonstrates how easy it is to get started with http://neo4j.com/developer[Neo4j] in JavaScript.
-
-It is a very simple web application that uses our Movie graph dataset to provide a search with listing, a detail view and a graph visualization.
+Foclóir allows you to search for patient in your system and see recommendations for providers that may be suitable referrals to treat your patient. These referrals are base on other patients across multiple provider networks who have accessed providers ffor similar diagnoses.
 
 == The Stack
 
@@ -31,7 +25,6 @@ $ npm install
 === Run locally
 
 * Start Neo4j (https://neo4j.com/download[Download & Install]) locally and open the http://localhost:7474[Neo4j Browser].
-* Install the Movies dataset with `:play movies`, click the statement, and hit the triangular "Run" button.
 * Clone this project from GitHub
 * Run the App inside the Webpack Dev Server:
 
@@ -62,11 +55,11 @@ After executing the `npm run build` command,  open local file "build/index.html"
 |neo4j+s://demo.neo4jlabs.com
 
 |NEO4J_USER
-|movies
+|neo4j
 
 |NEO4J_PASSWORD
-|movies
+|neo4j
 
 |NEO4J_DATABASE
-|movies
+|neo4jdb
 |===
