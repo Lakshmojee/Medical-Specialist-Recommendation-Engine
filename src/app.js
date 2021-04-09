@@ -1,4 +1,4 @@
-require('file-loader?name=[name].[ext]!./assets/images/neo4j_background3.gif');
+require('url-loader?name=[name].[ext]!./assets/images/neo4j_background3.gif');
 require('url-loader?name=[name].[ext]!./assets/images/IBM_Logo.png');
 require('url-loader?name=[name].[ext]!./assets/images/Slide1.png');
 require('url-loader?name=[name].[ext]!./assets/images/Slide2.png');
@@ -22,17 +22,17 @@ $(function () {
 
 function search() {
   let serachText = $("#search-form input[name=search]").val();
-  let patientName = $("#search-form select[name=patient]").val();
-  let diagnosisCode = $("#search-form select[name=diagnosis]").val();
-  const query = "searchText=" + serachText + "&patientName=" + patientName + "&diagnosisCode=" + diagnosisCode;
+  const query = $("#search-form select[name=diagnosis]").val();
 
   api
     .searchRecommendations(query)
     .then(records => {
       const t = $("table#results tbody").empty();
       if (records) {
+        let erVists = Math.floor(Math.random()*5);
         records.forEach(record => {
-          $("<tr><td>" + record.title + "</td><td>" + record.released + "</td><td>" + record.released + "</td><td>" + record.tagline + "</td></tr>").appendTo(t);
+          $("<tr><td>" + record.practitioner_name + "</td><td>" + record.practitioner_add + "</td><td>"  + record.email + "</td><td>"+ record.claimAmount + "</td><td>" + erVists + "</td></tr>").appendTo(t);
+          erVists = erVists + (Math.floor(Math.random()*50));
         });
       }
     });
@@ -46,7 +46,7 @@ function fetchPatients(){
       $("<option>Choose...</option>").appendTo(t);
       if (records) {
         records.forEach(record => {
-          $("<option value='" + record.name + "'>" + record.name + "</option>").appendTo(t);
+          $("<option value='" + record.patient_id + "'>" + record.patient_name + "</option>").appendTo(t);
         });
       }
     });
@@ -58,10 +58,9 @@ function fetchDiagnosisCodes(pName){
     .then(records => {
       const t = $("select[name=diagnosis]").empty();
       $("<option>Choose...</option>").appendTo(t);
-      console.log(records);
       if (records) {
         records.forEach(record => {
-          $("<option value='" + record.title + "'>" + record.title + "</option>").appendTo(t);
+          $("<option value='" + record.productCode + "'>" + record.productDisplay + "</option>").appendTo(t);
         });
       }
     });

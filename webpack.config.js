@@ -29,10 +29,10 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({template: 'src/assets/index.html'}),
     new Webpack.EnvironmentPlugin({
-      'NEO4J_URI': 'bolt://3.236.163.27:7687',
-      'NEO4J_DATABASE': 'movies',
+      'NEO4J_URI': 'bolt://localhost:7687',
+      'NEO4J_DATABASE': 'Alvearie',
       'NEO4J_USER': 'neo4j',
-      'NEO4J_PASSWORD': 'place-container-designators',
+      'NEO4J_PASSWORD': 'neo4j421',
       'NEO4J_VERSION': ''
     }),
   ],
@@ -48,12 +48,6 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        /*test: /\.(png|svg|ico|jpe?g|gif)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-          },
-        ],*/
         test: /\.(png|jpg|gif|svg|ico|eot|ttf|woff|woff2)$/i,
         loader: "url-loader",
         options: {

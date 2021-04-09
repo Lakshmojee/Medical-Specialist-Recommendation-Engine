@@ -1,5 +1,6 @@
 require('file-loader?name=[name].[ext]!../node_modules/neo4j-driver/lib/browser/neo4j-web.min.js');
 const Patient = require('./models/Patient');
+const Provider = require('./models/Provider');
 const DiagnosisCode = require('./models/DiagnosisCode');
 const _ = require('lodash');
 
@@ -18,21 +19,13 @@ const driver = neo4j.driver(
 console.log(`Database running at ${neo4jUri}`)
 
 function searchRecommendations(queryString) {
-  console.log("Laxmoji");
-  console.log("==========");
-  console.log(queryString);
-  console.log("==========");
-  queryString = "Matrix";
   const session = driver.session({database: database});
   return session.readTransaction((tx) =>
-      tx.run('MATCH (movie:Movie) \
-      WHERE movie.title =~ $title \
-      RETURN movie',
-      {title: '(?i).*' + queryString + '.*'})
+      tx.run('MATCH (n:Claims), (p:Practitioner) WHERE n.practitioner_id = p.practitioner_id and n.productCode= "' + queryString +'" RETURN n, p ORDER BY p.practitioner_name DESC')
     )
     .then(result => {
       return result.records.map(record => {
-        return new Patient(record.get('movie'));
+        return new Provider(record.get('p'), record.get('n'));
       });
     })
     .catch(error => {
@@ -46,14 +39,11 @@ function searchRecommendations(queryString) {
 function getPatients(queryString) {
   const session = driver.session({database: database});
   return session.readTransaction((tx) =>
-      tx.run('MATCH (person:Person) \
-      WHERE person.name =~ $name \
-      RETURN person LIMIT 25',
-      {name: '(?i).*' + queryString + '.*'})
+      tx.run('MATCH (p:Patients) RETURN p LIMIT 25')
     )
     .then(result => {
       return result.records.map(record => {
-        return new Patient(record.get('person'));
+        return new Patient(record.get('p'));
       });
     })
     .catch(error => {
@@ -65,17 +55,15 @@ function getPatients(queryString) {
 }
 
 function getDiagnosisCodes(queryString) {
-  console.log(queryString);
+
   const session = driver.session({database: database});
   return session.readTransaction((tx) =>
-      tx.run('MATCH (p:Person)-[r:ACTED_IN]->(m:Movie) \
-      where p.name= $name \
-      RETURN m LIMIT 25',
-      {name: '(?i).*' + queryString + '.*'})
+      tx.run('MATCH (n:Claims), (p:Patients) WHERE p.patient_id = "' + queryString + '" AND n.patient_id = p.patient_id RETURN n LIMIT 25')
     )
     .then(result => {
+
       return result.records.map(record => {
-        return new Patient(record.get('movie'));
+        return new DiagnosisCode(record.get('n'));
       });
     })
     .catch(error => {

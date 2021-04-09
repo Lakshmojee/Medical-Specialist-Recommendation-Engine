@@ -70,7 +70,9 @@
                         <div class="card">
                             <div class="card-body">
                               <h3 class="card-title text-primary">Foclóir Medical Specialist Recommendation Engine</h3>
-                              <p class="card-text">Foclóir allows you to search for patient in your system and see recommendations for providers that may be suitable referrals to treat your patient. These referrals are base on other patients across multiple provider networks who have accessed providers ffor similar diagnoses.</p>
+                              <p class="card-text">
+                                Foclóir allows you to search for patients in your system and see recommendations for specialist practitioners that may be suitable referrals for treatment. These results are based on other patients across multiple provider networks, who have accessed the suggested specialist practitioners for similar diagnoses.
+                              </p>
                             </div>
                           </div>
                     </div>
@@ -90,7 +92,7 @@
                             <div class="col-md-3">
                                 <label for="inputSearch" class="form-label col-form-label col-form-label-lg text-body">Search</label>
                                 <div class="input-group">
-                                    <input type="search" name="search" class="form-control form-control-md" id="inputSearch" value="" required />
+                                    <input type="search" name="search" class="form-control form-control-md" id="inputSearch" value="" />
                                     <button type="button" class="btn btn-primary btn-md">
                                         <i class="fa fa-search"></i>
                                     </button>
@@ -127,10 +129,11 @@
                             <table class="table  table-hover table-bordered table-striped" id="results">
                                 <thead>
                                     <tr class="table-light">
-                                        <th>Provider / Practitioner</th>
+                                        <th>Practitioner</th>
                                         <th>Location</th>
-                                        <th>Paid Amount (PP)</th>
-                                        <th>ER Visits (PP)</th>
+                                        <th>Email</th>
+                                        <th>Paid Amount ($)</th>
+                                        <th>ER Visits</th>
                                     </tr>
                                 </thead>
                                 <tbody>
